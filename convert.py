@@ -25,8 +25,8 @@ from dataset import Data_num
 
 traincsv = np.zeros((Data_num,7*7*(5*2+20)),dtype=np.float32)
 for i in range(Data_num):
-    with open(os.path.join('D:\\myproject\\yolov1simplemidjourney\\labels',f"{i}.txt"), 'r') as f:
+    with open(os.path.join('labels',f"{i}.txt"), 'r') as f:
         bbox = [float(x) for x in f.read().split()]
         traincsv[i,:] = convert_bbox2labels(bbox)
-np.savetxt(os.path.join('D:\\myproject\\yolov1simplemidjourney\\data', "train.csv"), traincsv)
+np.savetxt(os.path.join('data', "train.csv"), traincsv)
 print('converting finished')

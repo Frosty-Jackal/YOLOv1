@@ -1,7 +1,7 @@
 import os  
 
 #获取该目录下所有文件，存入列表中
-path = 'D:\\myproject\\yolov1simplemidjourney\\data'
+path = 'data'
 fileList=os.listdir(path)
 n=0
 for i in fileList:
