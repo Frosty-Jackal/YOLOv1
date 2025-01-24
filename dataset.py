@@ -5,6 +5,8 @@ import os
 import numpy as np
 from PIL import Image
 import torch
+Data_num = 2
+
 
 class MyDataset(Dataset):
     def __init__(self,dataset_dir,mode="train", train_val_ratio=0.9):
@@ -12,7 +14,7 @@ class MyDataset(Dataset):
         self.mode = mode
         label_csv = os.path.join(dataset_dir, mode+".csv")
         self.label = np.loadtxt(label_csv)
-        self.num_all_data = 100
+        self.num_all_data = Data_num  
         all_ids = list(range(self.num_all_data))
         num_train = int(train_val_ratio*self.num_all_data)
         if self.mode == "train":
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     dataset_dir = "data"
     dataset = MyDataset(dataset_dir)
     print(len(dataset))
-    for i in range(100):
+    for i in range(Data_num):
         img, label = dataset[i]
         print(img.size())
         img = torch.unsqueeze(img, dim=0)

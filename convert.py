@@ -21,10 +21,10 @@ def convert_bbox2labels(bbox):
     return labels
 
 import os
+from dataset import Data_num
 
-
-traincsv = np.zeros((100,7*7*(5*2+20)),dtype=np.float32)
-for i in range(100):
+traincsv = np.zeros((Data_num,7*7*(5*2+20)),dtype=np.float32)
+for i in range(Data_num):
     with open(os.path.join('D:\\myproject\\yolov1simplemidjourney\\labels',f"{i}.txt"), 'r') as f:
         bbox = [float(x) for x in f.read().split()]
         traincsv[i,:] = convert_bbox2labels(bbox)
