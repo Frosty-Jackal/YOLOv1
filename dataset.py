@@ -39,7 +39,7 @@ if __name__ == "__main__":
     dataset_dir = "data"
     dataset = MyDataset(dataset_dir)
     print(len(dataset))
-    for i in range(Data_num):
+    for i in range(len(dataset)):
         img, label = dataset[i]
         print(img.size())
         img = torch.unsqueeze(img, dim=0)
