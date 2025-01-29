@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YOLO</title>
+</head>
+<body>
+    <form action="/submit" method="post" enctype="multipart/form-data">
+        <label for="img">请提交图片:</label>
+        <input type="file" id="img" name="img">
+        <br>
+        <br>
+        <input type="submit" value="提交">
+    </form>
+    {% if image_url %}
+    <h2>处理后的照片:</h2>
+    <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 100%;">
+    {% endif %}
+</body>
+</html>
