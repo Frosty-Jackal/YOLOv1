@@ -169,6 +169,9 @@ if __name__ == "__main__":
         TP+=tmpTP
         FP+=tmpFP
         if i%10==0:
-            print('imgnum={} , AP={}'.format(i,TP/(TP+FP+1e-4))   )
-    print('finish')
+            AP=TP/(TP+FP+1e-6)
+            print('imgnum={} , AP={}'.format(i,AP) )
+    AP=TP/(TP+FP)
+    print('Final AP={}'.format(AP) )
+    print('Evaluation finished')
 
