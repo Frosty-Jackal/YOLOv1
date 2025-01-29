@@ -6,9 +6,13 @@ import torchvision.models as tvmodel
 from train import epoch
 import cv2
 from PIL import Image
+from dataset import MyDataset
+from torch.utils.data import DataLoader
 from torchvision import transforms
 from util import *
+from train import dataset_dir
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 class Mynet(nn.Module):
     def __init__(self):
         super(Mynet, self).__init__()
@@ -87,11 +91,43 @@ class Mynet(nn.Module):
         loss = coor_loss + obj_confi_loss + noobj_confi_loss + class_loss
         return loss / n_batch
 
+def calculate_TPFP(bbox, labels):
+    stdbbox=labels2bbox(labels)
+    TP=0
+    FP=0
+
+    for i in range(bbox.shape[0]):
+        
+        cls_namei = GL_CLASSES[int(bbox[i, 5])]
+        if(cls_namei != 'car'):
+            continue
+        confidencei = bbox[i, 4]
+        if confidencei < 0.6:
+            continue
+        TPpd=0
+        FPpd=0
+        for j in range(stdbbox.shape[0]):
+            cls_namej = GL_CLASSES[int(stdbbox[j, 5])]
+            if cls_namei != cls_namej:
+                continue
+            iou = calculate_iou(bbox[i], stdbbox[j])
+            if iou >= 0.5:
+                TPpd=1
+                break
+            
+            if iou < 0.5 :
+                FPpd=1
+        
+        if TPpd==1:
+            TP+=1
+        if FPpd==1 and TPpd==0:
+            FP+=1
+    return TP,FP
 
 if __name__ == "__main__":
     #eval
-    model = Mynet()  # 你需要先定义好模型架构
-    model.load_state_dict(torch.load(f'yolov1mj_state_dict_{epoch}.pth'))
+    model = Mynet()
+    model.load_state_dict(torch.load(f'yolov1mj_state_dict_{epoch}.pth', map_location=device))
     print(model)
     print("Start evaluating...")
     model.eval()
@@ -101,15 +137,38 @@ if __name__ == "__main__":
             transforms.ToTensor(),
         ])
     img_list = os.listdir(dataset_dir_test)
-    for img_name in img_list:
-        img_path = os.path.join(dataset_dir_test, img_name)
-        img = Image.open(img_path).convert('RGB')
-        img = trans(img)
-        img = torch.unsqueeze(img, dim=0)
-        print(img_name, img.shape)
-        preds = torch.squeeze(model(img), dim=0).detach().cpu()
+
+    train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=0.9)
+    train_loader = DataLoader(train_dataset, shuffle=False, batch_size=1)
+
+    # #img eval
+    # for img_name in img_list:
+    #     img_path = os.path.join(dataset_dir_test, img_name)
+    #     img = Image.open(img_path).convert('RGB')
+    #     img = trans(img)
+    #     img = torch.unsqueeze(img, dim=0)
+    #     print(img_name, img.shape)
+    #     preds = torch.squeeze(model(img), dim=0).detach().cpu()
+    #     preds = preds.permute(1,2,0)
+    #     bbox = labels2bbox(preds)
+    #     print("--------------------------------")
+    #     print(bbox.shape[1])
+    #     draw_img = cv2.imread(img_path)
+    #     draw_bbox(draw_img, bbox)
+    
+    # ap eval
+    TP=0
+    FP=0
+    for i,(imgs, labels) in enumerate(train_loader):
+        labels = labels.view(1, 7, 7, -1)
+        labels = torch.squeeze(labels, dim=0).detach().cpu()
+        preds = torch.squeeze(model(imgs), dim=0).detach().cpu()
         preds = preds.permute(1,2,0)
         bbox = labels2bbox(preds)
-        draw_img = cv2.imread(img_path)
-        draw_bbox(draw_img, bbox)
+        tmpTP,tmpFP = calculate_TPFP(bbox, labels)
+        TP+=tmpTP
+        FP+=tmpFP
+        if i%10==0:
+            print('imgnum={} , AP={}'.format(i,TP/(TP+FP+1e-4))   )
     print('finish')
+
