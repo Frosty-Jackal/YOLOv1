@@ -59,7 +59,10 @@ The `eval.py` script can be used to evaluate the trained model on a validation o
 3. **Prepare the dataset**:
    - Place your images in the `data` directory.
    - Place your labels(should be yolo format) in the `labels` directory
-   - python convert.py to Prepare a `train.csv` file with annotations in the required format.
+   ```bash
+   python convert.py
+   ```
+   - That's to Prepare a `train.csv` file with annotations in the required format(saved into data/).
 
 4. **Train the model**:
    ```bash
