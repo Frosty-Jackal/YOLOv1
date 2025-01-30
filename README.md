@@ -71,4 +71,9 @@ The `eval.py` script can be used to evaluate the trained model on a validation o
    python eval.py
    ```
 
+6. **Apply the model** :
+   ```bash
+   python application.py
+   ```
+
 Feel free to fork and modify this repository to suit your needs!
