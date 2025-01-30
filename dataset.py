@@ -26,7 +26,7 @@ class MyDataset(Dataset):
         label = torch.tensor(self.label[id, :])
         img = Image.open(self.dataset_dir+'/'+f'{id}.jpg')
         trans = transforms.Compose([
-            transforms.Resize(448),
+            transforms.Resize([448,448]),
             transforms.ToTensor(),
         ])
         img = trans(img)
