@@ -1,19 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOLO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            width: calc(100% - 22px); /* Subtract padding and border width */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .image-display {
+            margin-top: 20px;
+        }
+        .image-display img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    <form action="/submit" method="post" enctype="multipart/form-data">
-        <label for="img">请提交图片:</label>
-        <input type="file" id="img" name="img">
-        <br>
-        <br>
-        <input type="submit" value="提交">
-    </form>
-    {% if image_url %}
-    <h2>处理后的照片:</h2>
-    <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 100%;">
-    {% endif %}
+    <div class="form-container">
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <label for="img">请提交需要进行目标检测的图片:</label>
+            <input type="file" id="img" name="img">
+            <br>
+            <input type="submit" value="提交">
+        </form>
+        {% if image_url %}
+        <div class="image-display">
+            <h2>处理后的照片:</h2>
+            <img src="{{ image_url }}" alt="Uploaded Image">
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>

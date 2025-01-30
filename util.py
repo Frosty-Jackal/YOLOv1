@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
+import os
 
 COLOR = [(255,0,0),(255,125,0),(255,255,0),(255,0,125),(255,0,250),
          (255,125,125),(255,125,250),(125,125,0),(0,255,125),(255,0,0),
          (0,0,255),(125,0,255),(0,125,255),(0,255,255),(125,125,255),
          (0,255,0),(125,255,125),(255,255,255),(100,100,100),(0,0,0),]  # 用来标识20个类别的bbox颜色，可自行设定
 
-GL_CLASSES = ['car', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
-           'aeroplane', 'bicycle', 'boat', 'bus', 'person', 'motorbike', 'train',
+GL_CLASSES = ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
+           'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike', 'train',
            'bottle', 'chair', 'diningtable', 'pottedplant', 'sofa', 'tvmonitor']
 def calculate_iou(bbox1, bbox2):
     if bbox1[2]<=bbox1[0] or bbox1[3]<=bbox1[1] or bbox2[2]<=bbox2[0] or bbox2[3]<=bbox2[1]:
@@ -102,3 +103,21 @@ def draw_bbox(img, bbox):
         cv2.putText(img, str(confidence), (p1[0],p1[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
     cv2.imshow("bbox", img)
     cv2.waitKey(0)
+
+def draw_bbox_app(bbox,filename):
+    filepath = os.path.join('uploads', filename)
+    img=cv2.imread(filepath)
+    h, w = img.shape[0:2]
+    n = bbox.shape[0]
+    for i in range(n):
+        confidence = bbox[i, 4]
+        if confidence<0.2:
+            continue
+        p1 = (int(w * bbox[i, 0]), int(h * bbox[i, 1]))
+        p2 = (int(w * bbox[i, 2]), int(h * bbox[i, 3]))
+        cls_name = GL_CLASSES[int(bbox[i, 5])]
+        print(cls_name, p1, p2)
+        cv2.rectangle(img, p1, p2, COLOR[int(bbox[i, 5])])
+        cv2.putText(img, cls_name, p1, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
+        cv2.putText(img, str(confidence), (p1[0],p1[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255))
+    cv2.imwrite('predict/'+filename, img)
