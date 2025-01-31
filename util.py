@@ -1,15 +1,8 @@
 import cv2
 import numpy as np
 import os
+from configure import COLOR, GL_CLASSES
 
-COLOR = [(255,0,0),(255,125,0),(255,255,0),(255,0,125),(255,0,250),
-         (255,125,125),(255,125,250),(125,125,0),(0,255,125),(255,0,0),
-         (0,0,255),(125,0,255),(0,125,255),(0,255,255),(125,125,255),
-         (0,255,0),(125,255,125),(255,255,255),(100,100,100),(0,0,0),]  # 用来标识20个类别的bbox颜色，可自行设定
-
-GL_CLASSES = ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
-           'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike', 'train',
-           'bottle', 'chair', 'diningtable', 'pottedplant', 'sofa', 'tvmonitor']
 def calculate_iou(bbox1, bbox2):
     if bbox1[2]<=bbox1[0] or bbox1[3]<=bbox1[1] or bbox2[2]<=bbox2[0] or bbox2[3]<=bbox2[1]:
         return 0

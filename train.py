@@ -1,18 +1,12 @@
 import torch
 import torch.nn as nn
-import os
 import torchvision.models as tvmodel
 from torch.utils.data import DataLoader
-import cv2
-from PIL import Image
-from torchvision import transforms
 from util import *
 from dataset import MyDataset
-
+from configure import batch_size, epoch, print_freq
 dataset_dir='data'
-batch_size=1
-epoch=1
-print_freq=1
+
 device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 

@@ -1,11 +1,8 @@
 import torch
-import torch
 import torch.nn as nn
 import os
 import torchvision.models as tvmodel
 from train import epoch
-import cv2
-from PIL import Image
 from dataset import MyDataset
 from torch.utils.data import DataLoader
 from torchvision import transforms

@@ -1,7 +1,6 @@
-
-
 import numpy as np
-
+import os
+from configure import Data_num
 def convert_bbox2labels(bbox):
     """将bbox的(cls,x,y,w,h)数据转换为训练时方便计算Loss的数据形式(7,7,5*B+cls_num)
     注意，输入的bbox的信息是(xc,yc,w,h)格式的，转换为labels后，bbox的信息转换为了(px,py,w,h)格式"""
@@ -20,8 +19,7 @@ def convert_bbox2labels(bbox):
     labels = labels.reshape(1, -1)
     return labels
 
-import os
-from dataset import Data_num
+
 
 traincsv = np.zeros((Data_num,7*7*(5*2+20)),dtype=np.float32)
 for i in range(Data_num):

@@ -5,8 +5,7 @@ import os
 import numpy as np
 from PIL import Image
 import torch
-Data_num = 2
-
+from configure import Data_num
 
 class MyDataset(Dataset):
     def __init__(self,dataset_dir,mode="train", train_val_ratio=0.9):
