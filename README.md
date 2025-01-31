@@ -1,7 +1,7 @@
-# YOLOv1 Simple Implementation
+# YOLOv1
 
 ## Overview
-This repository provides a simple implementation of YOLOv1 (You Only Look Once) using PyTorch. YOLOv1 is a real-time object detection system that divides the image into a grid and predicts bounding boxes and class probabilities for each grid cell. The provided implementation includes training and evaluation utilities.
+This repository provides an implementation of YOLOv1 (You Only Look Once) using PyTorch. YOLOv1 is a real-time object detection system that divides the image into a grid and predicts bounding boxes and class probabilities for each grid cell. The provided implementation includes training and evaluation utilities.
 
 ## Key Files
 
@@ -47,19 +47,22 @@ The `eval.py` script can be used to evaluate the trained model on a validation o
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/yolov1-simple-implementation.git
-   cd yolov1-simple-implementation
+   git clone https://github.com/Frosty-Jackal/YOLOv1.git
+   cd YOLOv1
    ```
 
 2. **Install dependencies**:
    ```bash
-   pip install torch torchvision opencv-python-headless pillow
+   pip install torch torchvision opencv-python PIL...
    ```
 
 3. **Prepare the dataset**:
    - Place your images in the `data` directory.
    - Place your labels(should be yolo format) in the `labels` directory
-   - python convert.py to Prepare a `train.csv` file with annotations in the required format.
+   ```bash
+   python convert.py
+   ```
+   - That's to Prepare a `train.csv` file with annotations in the required format(saved into data/).
 
 4. **Train the model**:
    ```bash
@@ -69,6 +72,11 @@ The `eval.py` script can be used to evaluate the trained model on a validation o
 5. **Evaluate the model** (after training):
    ```bash
    python eval.py
+   ```
+
+6. **Apply the model** :
+   ```bash
+   python application.py
    ```
 
 Feel free to fork and modify this repository to suit your needs!
