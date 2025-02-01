@@ -8,7 +8,7 @@ import torch
 from configure import Data_num
 
 class MyDataset(Dataset):
-    def __init__(self,dataset_dir,mode="train", train_val_ratio=0.9):
+    def __init__(self,dataset_dir,mode="train", train_val_ratio=1):
         self.dataset_dir = dataset_dir
         self.mode = mode
         label_csv = os.path.join(dataset_dir, mode+".csv")

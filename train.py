@@ -4,7 +4,7 @@ import torchvision.models as tvmodel
 from torch.utils.data import DataLoader
 from util import *
 from dataset import MyDataset
-from configure import batch_size, epoch, print_freq
+from configure import batch_size, epoch, print_freq,train_freq
 dataset_dir='data'
 
 device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -92,7 +92,7 @@ class Mynet(nn.Module):
 
 
 if __name__ == '__main__':
-    train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=0.9)
+    train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=1)
     train_loader = DataLoader(train_dataset, shuffle=False, batch_size=batch_size)
     model = Mynet().to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
@@ -101,6 +101,7 @@ if __name__ == '__main__':
     model.train()
     print("Start training...")
     avg_loss = 0.0
+    actrual_epoch=epoch
     for e in range(epoch):
         for i,(imgs, labels) in enumerate(train_loader):
             labels = labels.view(batch_size, 7, 7, -1)
@@ -118,8 +119,13 @@ if __name__ == '__main__':
             if (i+1) % print_freq == 0: 
                 print("Epoch %d/%d| training loss = %.3f, avg_loss = %.3f" %
                     (e, epoch, loss.item(), avg_loss/(i+1) ))
-                break
         avg_loss = 0.0
-    torch.save(model.state_dict(), f'yolov1mj_state_dict_{epoch}.pth')
-    print(f'save the yolov1mj_state_dict_{epoch}')
+        if(e + 1 ) % train_freq == 0 :
+            tmp =  input("Do you want to stop trainning? (Y/N): ")
+            if(tmp=='Y') :
+                actrual_epoch=e+1
+                print('Training stopped.')
+                break
+    torch.save(model.state_dict(), f'yolov1mj_state_dict_{actrual_epoch}.pth')
+    print(f'save the yolov1mj_state_dict_{actrual_epoch}.pth')
     
