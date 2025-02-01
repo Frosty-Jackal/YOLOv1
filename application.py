@@ -9,7 +9,8 @@ from util import calculate_iou,labels2bbox,draw_bbox_app
 from PIL import Image
 from torchvision import transforms
 import torch
-
+import webbrowser
+from configure import url
 class Mynet(nn.Module):
     def __init__(self):
         super(Mynet, self).__init__()
@@ -128,4 +129,6 @@ if __name__ == '__main__':
         os.makedirs('uploads')
     if not os.path.exists('predict'):
         os.makedirs('predict')    
+    webbrowser.open(url)
     app.run(debug=True)
+    input("请按回车键继续...")
