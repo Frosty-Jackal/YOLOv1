@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-from configure import COLOR, GL_CLASSES
+from configure import COLOR, GL_CLASSES,iou_thresh,cls_num,bound_confidence
 
 def calculate_iou(bbox1, bbox2):
     if bbox1[2]<=bbox1[0] or bbox1[3]<=bbox1[1] or bbox2[2]<=bbox2[0] or bbox2[3]<=bbox2[1]:
@@ -37,7 +37,7 @@ def labels2bbox(matrix):
     cls = np.argmax(matrix[:, 10:], axis=1)
     cls = np.repeat(cls, repeats=2, axis=0)
     bboxes[:, 5] = cls
-    keepid = nms_multi_cls(bboxes, thresh=0.1, n_cls=20)
+    keepid = nms_multi_cls(bboxes, thresh=iou_thresh, n_cls=cls_num)
     ids = []
     for x in keepid:
         ids = ids + list(x)
@@ -85,7 +85,7 @@ def draw_bbox(img, bbox):
     n = bbox.shape[0]
     for i in range(n):
         confidence = bbox[i, 4]
-        if confidence<0.2:
+        if confidence<bound_confidence:
             continue
         p1 = (int(w * bbox[i, 0]), int(h * bbox[i, 1]))
         p2 = (int(w * bbox[i, 2]), int(h * bbox[i, 3]))
@@ -104,7 +104,7 @@ def draw_bbox_app(bbox,filename):
     n = bbox.shape[0]
     for i in range(n):
         confidence = bbox[i, 4]
-        if confidence<0.2:
+        if confidence<bound_confidence:
             continue
         p1 = (int(w * bbox[i, 0]), int(h * bbox[i, 1]))
         p2 = (int(w * bbox[i, 2]), int(h * bbox[i, 3]))

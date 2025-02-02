@@ -95,7 +95,7 @@ if __name__ == '__main__':
     train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=1)
     train_loader = DataLoader(train_dataset, shuffle=False, batch_size=batch_size)
     model = Mynet().to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, weight_decay=1e-3)
     
     #train
     model.train()

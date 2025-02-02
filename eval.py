@@ -4,6 +4,7 @@ import os
 import torchvision.models as tvmodel
 from train import epoch
 from dataset import MyDataset
+from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from util import *
@@ -130,45 +131,46 @@ if __name__ == "__main__":
     model.eval()
     dataset_dir_test='data'
     trans = transforms.Compose([
-            transforms.Resize(448),
+            transforms.Resize([448,448]),
             transforms.ToTensor(),
         ])
     img_list = os.listdir(dataset_dir_test)
 
-    train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=0.9)
-    train_loader = DataLoader(train_dataset, shuffle=False, batch_size=1)
-
-    # #img eval
-    # for img_name in img_list:
-    #     img_path = os.path.join(dataset_dir_test, img_name)
-    #     img = Image.open(img_path).convert('RGB')
-    #     img = trans(img)
-    #     img = torch.unsqueeze(img, dim=0)
-    #     print(img_name, img.shape)
-    #     preds = torch.squeeze(model(img), dim=0).detach().cpu()
-    #     preds = preds.permute(1,2,0)
-    #     bbox = labels2bbox(preds)
-    #     print("--------------------------------")
-    #     print(bbox.shape[1])
-    #     draw_img = cv2.imread(img_path)
-    #     draw_bbox(draw_img, bbox)
     
-    # ap eval
-    TP=0
-    FP=0
-    for i,(imgs, labels) in enumerate(train_loader):
-        labels = labels.view(1, 7, 7, -1)
-        labels = torch.squeeze(labels, dim=0).detach().cpu()
-        preds = torch.squeeze(model(imgs), dim=0).detach().cpu()
+
+    #img eval
+    for img_name in img_list:
+        img_path = os.path.join(dataset_dir_test, img_name)
+        img = Image.open(img_path).convert('RGB')
+        img = trans(img)
+        img = torch.unsqueeze(img, dim=0)
+        print(img_name, img.shape)
+        preds = torch.squeeze(model(img), dim=0).detach().cpu()
         preds = preds.permute(1,2,0)
         bbox = labels2bbox(preds)
-        tmpTP,tmpFP = calculate_TPFP(bbox, labels)
-        TP+=tmpTP
-        FP+=tmpFP
-        if i%10==0:
-            AP=TP/(TP+FP+1e-6)
-            print('imgnum={} , AP={}'.format(i,AP) )
-    AP=TP/(TP+FP)
-    print('Final AP={}'.format(AP) )
-    print('Evaluation finished')
+        print("--------------------------------")
+        print(bbox.shape[1])
+        draw_img = cv2.imread(img_path)
+        draw_bbox(draw_img, bbox)
+    
+    # # ap eval
+    # TP=0
+    # FP=0
+    # train_dataset = MyDataset(dataset_dir, mode="train", train_val_ratio=0.9)
+    # train_loader = DataLoader(train_dataset, shuffle=False, batch_size=1)
+    # for i,(imgs, labels) in enumerate(train_loader):
+    #     labels = labels.view(1, 7, 7, -1)
+    #     labels = torch.squeeze(labels, dim=0).detach().cpu()
+    #     preds = torch.squeeze(model(imgs), dim=0).detach().cpu()
+    #     preds = preds.permute(1,2,0)
+    #     bbox = labels2bbox(preds)
+    #     tmpTP,tmpFP = calculate_TPFP(bbox, labels)
+    #     TP+=tmpTP
+    #     FP+=tmpFP
+    #     if i%10==0:
+    #         AP=TP/(TP+FP+1e-6)
+    #         print('imgnum={} , AP={}'.format(i,AP) )
+    # AP=TP/(TP+FP)
+    # print('Final AP={}'.format(AP) )
+    # print('Evaluation finished')
 
